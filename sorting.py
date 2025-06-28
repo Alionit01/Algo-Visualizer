@@ -8,16 +8,24 @@ def bubble_sort(data, key=lambda x: x):
     return data
 
 def quick_sort(data, key=lambda x: x):
-    data = data.copy()
     if len(data) <= 1:
         return data
-    pivot = data[0]
-    lesser = [x for x in data[1:] if key(x) <= key(pivot)]
-    greater = [x for x in data[1:] if key(x) > key(pivot)]
-    return quick_sort(lesser, key) + [pivot] + quick_sort(greater, key)
+
+    pivot = data[len(data) // 2]  # Middle pivot helps prevent worst-case
+    pivot_key = key(pivot)
+
+    lesser = [x for x in data if key(x) < pivot_key]
+    greater = [x for x in data if key(x) > pivot_key]
+    equal = [x for x in data if key(x) == pivot_key]
+
+    # ⚠️ Only recurse when input is smaller than original
+    if len(lesser) == len(data) or len(greater) == len(data):
+        return data  # Avoid infinite recursion on equal elements
+
+    return quick_sort(lesser, key) + equal + quick_sort(greater, key)
+
 
 def merge_sort(data, key=lambda x: x):
-    data = data.copy()
     if len(data) <= 1:
         return data
     mid = len(data) // 2
